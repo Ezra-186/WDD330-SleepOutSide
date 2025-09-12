@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Product Details</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <h1>SleepOutside</h1>
+    </header>
+    <main id="main" class="container">
+      <section data-product-details></section>
+    </main>
+    <footer class="site-footer">
+      <small>&copy; <span id="year"></span> SleepOutside</small>
+    </footer>
+    <script type="module" src="/js/product.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

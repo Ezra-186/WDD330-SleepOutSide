@@ -28,3 +28,11 @@ export function getParam(param) {
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(param);
 }
+
+// Renders an array with a template function into a parent element.
+export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false) {
+  if (!parentElement) return;
+  if (clear) parentElement.innerHTML = "";
+  const html = list.map(templateFn).join("");
+  parentElement.insertAdjacentHTML(position, html);
+}

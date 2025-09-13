@@ -1,23 +1,19 @@
-function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
-}
+import tents from "../json/tents.json";
 
 export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `../json/${this.category}.json`;
+  constructor(limit = 4) {
+    this.limit = limit;
   }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+  async getData() {
+    const items = Array.isArray(tents) ? tents : (tents?.products ?? tents ?? []);
+    const preferred = ["880RR", "985RF", "985PR", "344YJ"];
+    const ordered = preferred
+      .map(id => items.find(p => String(p.Id ?? p.id) === id))
+      .filter(Boolean);
+    return ordered.slice(0, this.limit);
   }
   async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    const items = Array.isArray(tents) ? tents : (tents?.products ?? tents ?? []);
+    return items.find((item) => String(item.Id ?? item.id) === String(id));
   }
 }

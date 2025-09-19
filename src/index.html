@@ -26,26 +26,51 @@
         </p>
       </div>
     </div>
+    <section class="categories" aria-label="Shop by category">
+      <h2 class="visually-hidden">Shop by Category</h2>
+
+      <a class="category-card" href="/product_listing/index.html?category=tents">
+        <img src="/images/noun_Tent_25178.svg" alt="Tents" width="120" height="120" loading="lazy" />
+        <span>Tents</span>
+      </a>
+
+      <a class="category-card" href="/product_listing/index.html?category=sleeping-bags">
+        <img src="/images/sleeping-bag.svg" alt="Sleeping Bags" width="120" height="120" loading="lazy" />
+        <span>Sleeping Bags</span>
+      </a>
+
+      <a class="category-card" href="/product_listing/index.html?category=backpacks">
+        <img src="/images/backpack.svg" alt="Backpacks" width="120" height="120" loading="lazy" />
+        <span>Backpacks</span>
+      </a>
+
+      <a class="category-card" href="/product_listing/index.html?category=hammocks">
+        <img src="/images/hammock.svg" alt="Hammocks" width="120" height="120" loading="lazy" />
+        <span>Hammocks</span>
+      </a>
+    </section>
     <section class="products">
       <h2>Top Products</h2>
       <ul id="product-list" class="product-list"></ul>
     </section>
   </main>
-<footer id="main-footer"></footer>
-<script type="module">
-  import { loadHeaderFooter, qs } from "/js/utils.mjs";
-  import ProductData from "/js/ProductData.mjs";
-  import ProductList from "/js/ProductList.mjs";
-  import { initCartBadge } from "/js/CartBadge.mjs";
+  <footer id="main-footer"></footer>
 
-  loadHeaderFooter();
-  initCartBadge();
 
-  const data = new ProductData("tents", 4);
-  const listElement = qs("#product-list");
-  const list = new ProductList(data, listElement);
-  list.init();
-</script>
+  <script type="module">
+    import { loadHeaderFooter, qs } from "/js/utils.mjs";
+    import ProductData from "/js/ProductData.mjs";
+    import ProductList from "/js/ProductList.mjs";
+    import { initCartBadge } from "/js/CartBadge.mjs";
+
+    loadHeaderFooter();
+    initCartBadge();
+
+    const data = new ProductData("tents", 4);
+    const listElement = qs("#product-list");
+    const list = new ProductList(data, listElement);
+    list.init();
+  </script>
 
 </body>
 

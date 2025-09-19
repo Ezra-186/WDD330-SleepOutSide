@@ -5,7 +5,7 @@ export default defineConfig({
   // Use src as the app root for dev and build
   root: "src/",
   // Ensure everything under /public is copied into /dist
-  publicDir: "../public",
+  publicDir: "public",
   build: {
     outDir: "../dist",
     rollupOptions: {

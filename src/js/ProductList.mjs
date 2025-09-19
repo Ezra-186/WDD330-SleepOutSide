@@ -2,14 +2,16 @@ import { renderListWithTemplate } from "./utils.mjs";
 
 function normalizeImgPath(src) {
   if (!src) return "/images/placeholder.png";
-  return src.replace(/^(\.\.\/)+/, "/"); 
+  return src.replace(/^(\.\.\/)+/, "/");
 }
 
 function productCardTemplate(item) {
   const price = Number(item.FinalPrice ?? item.ListPrice ?? 0).toFixed(2);
   const name = item.NameWithoutBrand ?? item.Name ?? "";
   const brand = item.Brand?.Name ?? "";
-  const img = normalizeImgPath(item.Image);
+
+  const img = normalizeImgPath(item?.Images?.PrimaryMedium || item.Image || "/images/placeholder.png");
+
   return `
     <li class="product-card">
       <a href="/product_pages/index.html?product=${item.Id}">

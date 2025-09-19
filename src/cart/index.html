@@ -94,5 +94,53 @@
     </main>
 
     <footer>&copy;NOT a real business</footer>
+  <script type="module">
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem('so-cart')) || []; }
+    catch { return []; }
+  }
+
+  function productThumb(item) {
+    return (
+      item?._thumb ||
+      item?.Images?.PrimarySmall ||
+      item?.Images?.PrimaryMedium ||
+      item?.Image ||
+      '/images/placeholder.png'
+    );
+  }
+
+  function productName(item) {
+    return item?.NameWithoutBrand || item?.Name || 'Product';
+  }
+
+  function productPrice(item) {
+    const n = Number(item?.FinalPrice ?? item?.ListPrice ?? item?.Price ?? 0);
+    return `$${n.toFixed(2)}`;
+  }
+
+  function renderCartList() {
+    const listEl = document.querySelector('.product-list');
+    if (!listEl) return;
+    const cart = readCart();
+    if (cart.length) console.log('Cart[0] sample:', cart[0]);
+    listEl.innerHTML = cart.map(item => `
+      <li class="cart-card divider">
+        <a class="cart-card__image" href="/product_pages/index.html?product=${item.Id}">
+          <img src="${productThumb(item)}" alt="${productName(item)}" width="60" height="60">
+        </a>
+        <a href="/product_pages/index.html?product=${item.Id}">
+          <h2 class="card__name">${productName(item)}</h2>
+        </a>
+        <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
+        <p class="cart-card__price">${productPrice(item)}</p>
+      </li>
+    `).join('');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(renderCartList);
+  });
+</script>
   </body>
 </html>

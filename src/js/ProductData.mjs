@@ -3,24 +3,30 @@ function toJson(res) {
   return res.json();
 }
 
+const rawBase = import.meta.env.VITE_SERVER_URL || '';
+const baseURL = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
 export default class ProductData {
-  constructor(category = "tents", limit = 4) {
+  constructor(category = 'tents', limit = 4) {
     this.category = category;
     this.limit = limit;
-    this.url = `${import.meta.env.BASE_URL}json/${category}.json`;
-  }
-
-  async getAll() {
-    return fetch(this.url, { cache: "no-store" }).then(toJson);
   }
 
   async getData() {
-    const data = await this.getAll();
-    return Array.isArray(data) ? data.slice(0, this.limit) : [];
+    const url = `${baseURL}products/search/${this.category}`;
+    const data = await fetch(url, { cache: 'no-store' }).then(toJson);
+    const list = Array.isArray(data?.Result) ? data.Result : [];
+    return this.limit ? list.slice(0, this.limit) : list;
   }
 
   async findProductById(id) {
-    const products = await this.getAll();
-    return products.find((p) => String(p.Id) === String(id));
+    const url = `${baseURL}product/${id}`;
+    try {
+      const data = await fetch(url, { cache: 'no-store' }).then(toJson);
+      return data?.Result ?? null; // return the product itself
+    } catch (err) {
+      console.error('findProductById failed:', err);
+      return null;
+    }
   }
 }

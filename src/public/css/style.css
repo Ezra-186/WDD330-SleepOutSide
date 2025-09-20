@@ -244,15 +244,12 @@ button {
   text-align: right;
 }
 
-/* improve right column spacing so qty/price don't collide with the X */
 .cart-card__quantity,
 .cart-card__price { padding-right: 2.25rem; }
 
-/* subtle hierarchy */
 .cart-card__quantity { color: #666; font-size: .9rem; }
 .cart-card__price { font-weight: 600; }
 
-/* make the X a rounded chip so it reads as a control */
 .cart-card__remove{
   width: 32px;
   height: 32px;
@@ -265,7 +262,6 @@ button {
 }
 .cart-card__remove:hover{ background: #ffecec; transform: scale(1.04); }
 
-/* lighter color for the variant swatch text */
 .cart-card__color{ color:#555; }
 
 @media (min-width: 640px){

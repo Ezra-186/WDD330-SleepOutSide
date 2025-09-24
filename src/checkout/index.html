@@ -1,28 +1,63 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Sleep Outside | Checkout</title>
-
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 
 <body>
   <header id="main-header"></header>
-  </header>
 
   <main class="divider">
-    <section class="products">
-      <h2>Review & Place your Order</h2>
-    </section>
+    <h2>Review & Place your Order</h2>
+    <form id="checkout-form">
+      <section>
+        <h3>Customer</h3>
+        <div class="grid">
+          <label>First Name <input name="fname" id="fname" required /></label>
+          <label>Last Name <input name="lname" id="lname" required /></label>
+        </div>
+      </section>
+
+      <section>
+        <h3>Address</h3>
+        <label>Street <input name="street" id="street" required /></label>
+        <div class="grid">
+          <label>City <input name="city" id="city" required /></label>
+          <label>State <input name="state" id="state" required /></label>
+        </div>
+        <label>Zip <input name="zip" id="zip" required /></label>
+      </section>
+
+      <section>
+        <h3>Payment</h3>
+        <label>Card Number <input name="cardNumber" id="cardNumber" inputmode="numeric" autocomplete="cc-number"
+            required /></label>
+        <div class="grid">
+          <label>Expiration (MM/YY) <input name="expiration" id="expiration" autocomplete="cc-exp" required /></label>
+          <label>Security Code <input name="code" id="code" inputmode="numeric" autocomplete="cc-csc"
+              required /></label>
+        </div>
+      </section>
+
+      <section class="order">
+        <h3>Order Summary</h3>
+        <div class="row"><span>Subtotal</span><strong id="summary-subtotal">$0.00</strong></div>
+        <div class="row"><span>Tax (6%)</span><strong id="summary-tax">$0.00</strong></div>
+        <div class="row"><span>Shipping</span><strong id="summary-shipping">$0.00</strong></div>
+        <hr />
+        <div class="row"><span>Total</span><strong id="summary-total">$0.00</strong></div>
+      </section>
+
+      <button id="checkout-btn" type="submit">Place Order</button>
+    </form>
   </main>
 
   <footer id="main-footer"></footer>
+  <script type="module" src="../js/checkout.mjs"></script>
 </body>
 
 </html>

@@ -65,16 +65,18 @@
     loadHeaderFooter();
     initCartBadge();
 
-    try {
-      const data = new ExternalServices("tents", 4);
-      const listElement = qs("#product-list");
-      const list = new ProductList(data, listElement);
-      await list.init();
-    } catch (err) {
-      console.error("Home init failed:", err);
-      const ul = document.getElementById("product-list");
-      if (ul) ul.innerHTML = `<li>Unable to load products right now.</li>`;
+    async function initHome() {
+      try {
+        const data = new ExternalServices("tents", 4);
+        const listElement = qs("#product-list");
+        const list = new ProductList(data, listElement);
+        await list.init();
+      } catch (err) {
+        console.error("Home init failed:", err);
+      }
     }
+
+    initHome();
   </script>
   
 

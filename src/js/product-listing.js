@@ -1,5 +1,5 @@
 import { loadHeaderFooter, getParam, qs } from './utils.mjs';
-import ProductData from './ProductData.mjs';
+import ExternalServices from './ExternalServices.mjs';
 import ProductList from './ProductList.mjs';
 
 loadHeaderFooter();
@@ -15,6 +15,6 @@ if (titleEl) {
 }
 
 const listElement = document.querySelector('.product-list');
-const dataSource = new ProductData(category);
+const dataSource = new ExternalServices(category);
 const list = new ProductList(dataSource, listElement);
 list.init();

@@ -55,7 +55,6 @@ export function getCartCount() {
   return readCart().reduce((sum, item) => sum + (item.quantity || 1), 0);
 }
 
-// render a single template
 export function renderWithTemplate(template, parentElement, data, callback) {
   parentElement.innerHTML = template;
   if (callback) {
@@ -63,14 +62,12 @@ export function renderWithTemplate(template, parentElement, data, callback) {
   }
 }
 
-// fetch an HTML partial
 export async function loadTemplate(path) {
   const res = await fetch(path);
   const template = await res.text();
   return template;
 }
 
-// load header and footer into the page
 export async function loadHeaderFooter() {
   const headerTemplate = await loadTemplate("/partials/header.html");
   const footerTemplate = await loadTemplate("/partials/footer.html");
@@ -83,3 +80,32 @@ export async function loadHeaderFooter() {
   });
   renderWithTemplate(footerTemplate, footerElement);
 }
+
+function escapeHTML(str) {
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+export function alertMessage(message, scroll = true) {
+  document.querySelectorAll('.alert').forEach(a => a.remove());
+  const main = document.querySelector('main') || document.body;
+  const el = document.createElement('div');
+  el.className = 'alert';
+  el.innerHTML = `
+    <div class="alert__content">
+      <p>${typeof message === 'string' ? message : JSON.stringify(message)}</p>
+      <button class="alert__close" aria-label="Close">×</button>
+    </div>`;
+  el.addEventListener('click', (e) => { if (e.target.closest('.alert__close')) el.remove(); });
+  main.prepend(el);
+  if (scroll) window.scrollTo(0, 0);
+}
+
+export function removeAllAlerts() {
+  document.querySelectorAll('.alert').forEach(a => a.remove());
+}
+

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Order Success</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <header id="main-header"></header>
+    <main class="divider">
+        <h2>Thank you for your order!</h2>
+        <p>Your order was placed successfully.</p>
+        <p><a href="/">Continue shopping</a></p>
+    </main>
+    <footer id="main-footer"></footer>
+    <script type="module">
+        import { loadHeaderFooter } from "/js/utils.mjs";
+        import { initCartBadge } from "/js/CartBadge.mjs";
+        loadHeaderFooter(); initCartBadge();
+    </script>
+</body>
+
+</html>

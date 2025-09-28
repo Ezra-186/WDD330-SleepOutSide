@@ -591,6 +591,28 @@ button#checkout-btn:hover {
   padding: 1rem;
 }
 
+/*alert styling */
+.alert {
+  padding: 1rem;
+  margin: 0 0 1rem;
+  border: 1px solid #c00;
+  background: #fee;
+}
+
+.alert__content {
+  display: flex;
+  gap: .75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.alert__close {
+  border: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
 /* end formm*/
 
 @media (min-width: 500px) {

@@ -2,7 +2,6 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-
   root: "src/",
   publicDir: "public",
   build: {
@@ -12,12 +11,11 @@ export default defineConfig({
         main: resolve(__dirname, "src/index.html"),
         cart: resolve(__dirname, "src/cart/index.html"),
         checkout: resolve(__dirname, "src/checkout/index.html"),
+        success: resolve(__dirname, "src/checkout/success.html"), // add this
         product: resolve(__dirname, "src/product_pages/index.html"),
         listing: resolve(__dirname, "src/product_listing/index.html"),
       },
     },
   },
-  server: {
-    open: true,
-  },
+  server: { open: true },
 });

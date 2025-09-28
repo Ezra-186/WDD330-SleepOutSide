@@ -31,24 +31,70 @@ export function renderListWithTemplate(templateFn, parentElement, list, position
   parentElement.insertAdjacentHTML(position, html);
 }
 
-export function readCart() {
-  return getLocalStorage("so-cart") || [];
+// --- cart helpers (no duplicates) ---
+function normalizeId(p) {
+  return String(p?.Id ?? p?.id ?? "");
 }
+
+export function readCart() {
+  const cart = getLocalStorage("so-cart") || [];
+  return Array.isArray(cart) ? cart : [];
+}
+
 export function writeCart(cart) {
   setLocalStorage("so-cart", cart);
 }
 
 export function addToCart(product, qty = 1) {
-  if (!product || !product.Id) return readCart();
+  const id = normalizeId(product);
+  if (!id) return readCart();
+
+  const q = Math.max(1, Number(qty) || 1);
   const cart = readCart();
-  const i = cart.findIndex((p) => String(p.Id) === String(product.Id));
+  const i = cart.findIndex((p) => normalizeId(p) === id);
+
   if (i > -1) {
-    cart[i].quantity = (cart[i].quantity || 1) + qty;
+    cart[i].quantity = (Number(cart[i].quantity) || 1) + q;
   } else {
-    cart.push({ ...product, quantity: qty });
+    cart.push({ ...product, quantity: q });
   }
   writeCart(cart);
   return cart;
+}
+// keep normalizeId, readCart, writeCart, addToCart, dedupeCart as you have them
+
+// decrease qty by N (or remove if hits 0)
+export function removeFromCart(id, qty = 1) {
+  const cart = readCart();
+  const idx = cart.findIndex(p => String(p.Id ?? p.id) === String(id));
+  if (idx > -1) {
+    const next = (Number(cart[idx].quantity) || 1) - Math.max(1, Number(qty) || 1);
+    if (next <= 0) cart.splice(idx, 1);
+    else cart[idx].quantity = next;
+    writeCart(cart);
+  }
+  return cart;
+}
+
+// remove item entirely
+export function deleteItem(id) {
+  const cart = readCart().filter(p => String(p.Id ?? p.id) !== String(id));
+  writeCart(cart);
+  return cart;
+}
+
+export function dedupeCart() {
+  const map = new Map();
+  for (const item of readCart()) {
+    const id = normalizeId(item);
+    if (!id) continue;
+    const prev = map.get(id) || { ...item, quantity: 0 };
+    prev.quantity = (Number(prev.quantity) || 0) + (Number(item.quantity) || 1);
+    map.set(id, prev);
+  }
+  const deduped = [...map.values()];
+  writeCart(deduped);
+  return deduped;
 }
 
 export function getCartCount() {
@@ -74,12 +120,14 @@ export async function loadHeaderFooter() {
   const headerElement = document.querySelector("#main-header");
   const footerElement = document.querySelector("#main-footer");
 
+  dedupeCart();
 
   renderWithTemplate(headerTemplate, headerElement, null, () => {
     import('./CartBadge.mjs').then(({ initCartBadge }) => initCartBadge());
   });
   renderWithTemplate(footerTemplate, footerElement);
 }
+
 
 function escapeHTML(str) {
   return String(str)

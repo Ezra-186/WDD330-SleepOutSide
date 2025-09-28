@@ -6,25 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sleep Outside | Products</title>
     <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/product-list.css" />
 </head>
 
 <body>
     <header id="main-header"></header>
 
     <main class="divider">
-        <section class="products">
-            <h2 id="category-title">Top Products</h2>
-            <ul class="product-list" aria-live="polite"></ul>
-            <noscript>
-                Please enable JavaScript to view products.
-            </noscript>
-        </section>
+        <h2 id="category-title">Products</h2>
+        <!-- ProductList.mjs renders into this -->
+        <ul id="product-list" class="product-list"></ul>
     </main>
 
     <footer id="main-footer"></footer>
 
-    <script type="module" src="/js/product-listing.js"></script>
+    <script type="module" src="../js/ProductList.mjs"></script>
 </body>
 
 </html>

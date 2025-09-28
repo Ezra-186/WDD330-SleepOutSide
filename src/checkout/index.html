@@ -13,7 +13,8 @@
 
   <main class="divider">
     <h2>Review & Place your Order</h2>
-    <form id="checkout-form">
+
+    <form id="checkout-form" novalidate>
       <section>
         <h3>Customer</h3>
         <div class="grid">
@@ -29,7 +30,7 @@
           <label>City <input name="city" id="city" required /></label>
           <label>State <input name="state" id="state" required /></label>
         </div>
-        <label>Zip <input name="zip" id="zip" required /></label>
+        <label>Zip <input name="zip" id="zip" inputmode="numeric" required /></label>
       </section>
 
       <section>
@@ -57,6 +58,7 @@
   </main>
 
   <footer id="main-footer"></footer>
+
   <script type="module" src="../js/checkout.mjs"></script>
 </body>
 

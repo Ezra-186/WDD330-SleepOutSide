@@ -1,56 +1,38 @@
-import { renderListWithTemplate } from "./utils.mjs";
+// src/js/ProductList.mjs
+import ExternalServices from "./ExternalServices.mjs";
+import { renderListWithTemplate, loadHeaderFooter, addToCart, getParam } from "./utils.mjs";
+
+loadHeaderFooter();
 
 function normalizeImgPath(src) {
   if (!src) return "/images/placeholder.png";
-  return src.replace(/^(\.\.\/)+/, "/");
+  if (/^https?:\/\//i.test(src) || src.startsWith("//")) return src;
+  const ORIGIN = "https://wdd330-backend.onrender.com";
+  if (src.startsWith("/images/")) return ORIGIN + src;
+  if (src.startsWith("images/")) return `${ORIGIN}/${src}`;
+  if (src.startsWith("../")) return src.replace(/^(\.\.\/)+/, "/");
+  if (src.startsWith("./")) return src.replace(/^\.\//, "/");
+  return `/${src}`;
 }
 
-function productCardTemplate(item) {
-  const price = Number(item.FinalPrice ?? item.ListPrice ?? 0).toFixed(2);
+function cardTemplate(item) {
+  const id = item.Id ?? item.id;
   const name = item.NameWithoutBrand ?? item.Name ?? "";
   const brand = item.Brand?.Name ?? "";
-
-  const img = normalizeImgPath(item?.Images?.PrimaryMedium || item.Image || "/images/placeholder.png");
-
+  const price = Number(item.FinalPrice ?? item.ListPrice ?? item.Price ?? 0).toFixed(2);
+  const rawImg = item?.Images?.PrimaryMedium || item?.Images?.PrimaryLarge || item?.Images?.PrimarySmall || item?.Image;
+  const img = normalizeImgPath(rawImg);
   return `
-    <li class="product-card">
-      <a href="/product_pages/index.html?product=${item.Id}">
+    <li class="product-card" data-id="${id}">
+      <a class="product-link" href="/product_pages/index.html?product=${id}">
         <img src="${img}" alt="${name}">
         <h3 class="card__brand">${brand}</h3>
         <h2 class="card__name">${name}</h2>
         <p class="product-card__price">$${price}</p>
       </a>
-      <button class="add-to-cart" data-id="${item.Id}" aria-label="Add ${name} to cart">Add to Cart</button>
+      <button class="add-to-cart" data-id="${id}">Add to Cart</button>
     </li>
   `;
-}
-
-function readCart() {
-  try { return JSON.parse(localStorage.getItem("so-cart")) || []; }
-  catch { return []; }
-}
-function writeCart(cart) {
-  localStorage.setItem("so-cart", JSON.stringify(cart));
-}
-function updateBadgeLocal() {
-  const badge = document.getElementById("cart-count");
-  if (!badge) return;
-  const cart = readCart();
-  const total = cart.reduce((sum, p) => sum + (p.quantity || 1), 0);
-  badge.textContent = total;
-  badge.classList.toggle("is-hidden", total === 0);
-}
-function addToCartLocal(product, qty = 1) {
-  const cart = readCart();
-  const idx = cart.findIndex((p) => String(p.Id) === String(product.Id));
-  if (idx > -1) {
-    cart[idx].quantity = (cart[idx].quantity || 1) + qty;
-  } else {
-    cart.push({ ...product, quantity: qty });
-  }
-  writeCart(cart);
-  updateBadgeLocal();
-  window.dispatchEvent(new CustomEvent("cart:changed"));
 }
 
 export default class ProductList {
@@ -58,32 +40,47 @@ export default class ProductList {
     this.dataSource = dataSource;
     this.listElement = listElement;
   }
-
   async init() {
     const list = await this.dataSource.getData();
-    renderListWithTemplate(productCardTemplate, this.listElement, list, "afterbegin", true);
-    this.addEventListeners();
-  }
+    if (!Array.isArray(list) || list.length === 0) {
+      this.listElement.innerHTML = '<li class="empty">No products found.</li>';
+      return;
+    }
+    renderListWithTemplate(cardTemplate, this.listElement, list, "afterbegin", true);
 
-  addEventListeners() {
-    this.listElement.addEventListener("click", (evt) => {
-      const btn = evt.target.closest(".add-to-cart");
+    this.listElement.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".add-to-cart");
       if (!btn) return;
-      evt.preventDefault();
-      const id = btn.dataset.id;
-      if (id) this.addItem(id);
+      const product = await this.dataSource.findProductById(btn.dataset.id);
+      addToCart(product, 1);
+      const { initCartBadge } = await import("./CartBadge.mjs");
+      initCartBadge();
     });
   }
-
-  async addItem(id) {
-    try {
-      const product = await (this.dataSource.findProductById
-        ? this.dataSource.findProductById(id)
-        : null);
-      if (!product) return;
-      addToCartLocal(product, 1);
-    } catch (err) {
-      console.error("Add to cart failed", err);
-    }
-  }
 }
+
+// ===== Listing-page bootstrap (runs only if #product-list exists) =====
+(function bootstrapListing() {
+  const listEl = document.querySelector("#product-list");
+  if (!listEl) return;
+
+  const raw = (getParam("category") || "tents").toLowerCase().trim();
+  let slug = raw.replace(/\s+/g, "-");
+
+  // guard against any lingering singularization from older code
+  if (slug === "sleeping-bag") slug = "sleeping-bags";
+
+  const allowed = new Set(["tents", "backpacks", "hammocks", "sleeping-bags"]);
+  const apiCategory = allowed.has(slug) ? slug : "tents";
+
+  console.log("[listing] raw=", raw, "slug=", slug, "→ apiCategory=", apiCategory);
+
+  const svc = new ExternalServices(apiCategory);
+
+  const titleEl = document.querySelector("#category-title") || document.querySelector("main h2");
+  const pretty = slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  if (titleEl) titleEl.textContent = pretty;
+  document.title = `Sleep Outside | ${pretty}`;
+
+  new ProductList(svc, listEl).init();
+})();

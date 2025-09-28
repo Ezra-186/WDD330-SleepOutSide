@@ -18,7 +18,14 @@ document.querySelector("#zip")?.addEventListener("input", () => {
     checkout.calculateOrderTotal();
 });
 
-document.querySelector("#checkout-form")?.addEventListener("submit", (e) => {
+document.querySelector("#checkout-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    checkout.checkout(e.currentTarget);
+    const form = e.currentTarget;
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const btn = document.querySelector("#checkout-btn");
+    btn?.setAttribute("disabled", "true");
+    try { await checkout.checkout(form); }
+    finally { btn?.removeAttribute("disabled"); }
 });
+
+

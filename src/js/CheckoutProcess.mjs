@@ -68,10 +68,10 @@ export default class CheckoutProcess {
 
         // sanitize
         form.cardNumber = form.cardNumber.replace(/\D/g, "");
-        form.code = form.code.replace(/\D/g, "").slice(0, 3); // 3-digit CVV
+        form.code = form.code.replace(/\D/g, "").slice(0, 3); 
         form.zip = String(form.zip || "").replace(/\D/g, "").slice(0, 5);
 
-        // expiration → MM/YY from any input "1228" or "12/28"
+
         const d = String(form.expiration || "").replace(/\D/g, "").slice(0, 4);
         if (d.length !== 4) {
             this.#applyFieldErrors(formEl, { expiration: "Use MM/YY" });
@@ -116,15 +116,14 @@ export default class CheckoutProcess {
 
         console.log("PAYLOAD →", payload);
 
-        // ---- DEMO: force success locally (turn off before grading) ----
-        const DEMO_FORCE_SUCCESS = true;
+        // ---- DEMO: 
+        const DEMO_FORCE_SUCCESS = import.meta.env.DEV; 
         const PASS_CARDS = ["4111111111111111", "4242424242424242", "4012888888881881", "5555555555554444", "2223003122003222"];
         if (DEMO_FORCE_SUCCESS || PASS_CARDS.includes(form.cardNumber)) {
             localStorage.removeItem(this.key);
             window.location.assign("/checkout/success.html");
             return;
         }
-        // ---- /DEMO ----
 
         try {
             await this.svc.checkout(payload);

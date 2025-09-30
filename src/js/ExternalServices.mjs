@@ -1,17 +1,16 @@
-// src/js/ExternalServices.mjs
 const BASE = (import.meta.env?.VITE_SERVER_URL || "https://wdd330-backend.onrender.com").replace(/\/+$/, "");
 const VALID = new Set(["tents", "backpacks", "hammocks", "sleeping-bags"]);
 
 export default class ExternalServices {
     constructor(category = null, limit = 0) {
         const slug = (category || "").toLowerCase().trim();
-        this.category = VALID.has(slug) ? slug : null; // null → default later
+        this.category = VALID.has(slug) ? slug : null; 
         this.limit = Number(limit) || 0;
         console.log("[ExternalServices] BASE =", BASE, "category =", this.category);
     }
 
     async getData() {
-        const cat = this.category ?? "tents"; // do not singularize
+        const cat = this.category ?? "tents"; 
         const url = `${BASE}/products/search/${cat}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`getData failed ${res.status} @ ${url}`);

@@ -23,7 +23,7 @@ export default class ProductData {
     const url = `${baseURL}product/${id}`;
     try {
       const data = await fetch(url, { cache: 'no-store' }).then(toJson);
-      return data?.Result ?? null; // return the product itself
+      return data?.Result ?? null;
     } catch (err) {
       console.error('findProductById failed:', err);
       return null;

@@ -12,7 +12,6 @@ function getCartItems() {
 }
 
 function countItems(list) {
-  // Support either `quantity` or `qty` in cart line items
   return Array.isArray(list)
     ? list.reduce((sum, item) => {
         const q = Number(item.quantity ?? item.qty ?? 1);
@@ -29,33 +28,24 @@ export function updateCartBadge() {
   el.classList.toggle("is-hidden", n <= 0);
 }
 
-/**
- * Call this right after you modify localStorage('so-cart')
- * to force the badge to refresh immediately on the same page.
- */
 export function notifyCartChanged() {
   window.dispatchEvent(new CustomEvent("cart:changed"));
 }
 
 export function initCartBadge() {
-  // Initial paint
   updateCartBadge();
 
-  // Updates from other tabs/windows
   window.addEventListener("storage", (e) => {
     if (e.key === CART_KEY) updateCartBadge();
   });
 
-  // Immediate updates within this page (preferred)
   window.addEventListener("cart:changed", updateCartBadge);
 
-  // Fallback: if buttons use these classes, try to refresh on click.
   document.addEventListener("click", (e) => {
     if (
       e.target.closest(".add-to-cart") ||
       e.target.closest(".remove-from-cart")
     ) {
-      // Let any synchronous handlers run first.
       setTimeout(updateCartBadge, 0);
     }
   });

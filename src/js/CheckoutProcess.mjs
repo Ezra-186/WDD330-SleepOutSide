@@ -116,7 +116,6 @@ export default class CheckoutProcess {
 
         console.log("PAYLOAD →", payload);
 
-        // ---- DEMO: 
         const DEMO_FORCE_SUCCESS = import.meta.env.DEV; 
         const PASS_CARDS = ["4111111111111111", "4242424242424242", "4012888888881881", "5555555555554444", "2223003122003222"];
         if (DEMO_FORCE_SUCCESS || PASS_CARDS.includes(form.cardNumber)) {

@@ -1,4 +1,3 @@
-// src/js/ProductList.mjs
 import ExternalServices from "./ExternalServices.mjs";
 import { renderListWithTemplate, loadHeaderFooter, addToCart, getParam } from "./utils.mjs";
 
@@ -59,7 +58,6 @@ export default class ProductList {
   }
 }
 
-// ===== Listing-page bootstrap (runs only if #product-list exists) =====
 (function bootstrapListing() {
   const listEl = document.querySelector("#product-list");
   if (!listEl) return;
@@ -67,8 +65,7 @@ export default class ProductList {
   const raw = (getParam("category") || "tents").toLowerCase().trim();
   let slug = raw.replace(/\s+/g, "-");
 
-  // guard against any lingering singularization from older code
-  if (slug === "sleeping-bag") slug = "sleeping-bags";
+if (slug === "sleeping-bag") slug = "sleeping-bags";
 
   const allowed = new Set(["tents", "backpacks", "hammocks", "sleeping-bags"]);
   const apiCategory = allowed.has(slug) ? slug : "tents";

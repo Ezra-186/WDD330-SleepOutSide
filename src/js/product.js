@@ -82,12 +82,10 @@ async function init() {
             return;
         }
 
-        // set title early so you can see something even if styling lags
         document.title = `Sleep Outside | ${product.Name ?? product.NameWithoutBrand ?? "Product"}`;
 
         mount.innerHTML = viewTemplate(product);
 
-        // wire add-to-cart
         const addBtn = q("#addToCart", mount);
         addBtn?.addEventListener("click", async () => {
             const qty = Math.max(1, Number(q("#qty", mount)?.value) || 1);

@@ -31,7 +31,6 @@ export function renderListWithTemplate(templateFn, parentElement, list, position
   parentElement.insertAdjacentHTML(position, html);
 }
 
-// --- cart helpers (no duplicates) ---
 function normalizeId(p) {
   return String(p?.Id ?? p?.id ?? "");
 }
@@ -61,9 +60,7 @@ export function addToCart(product, qty = 1) {
   writeCart(cart);
   return cart;
 }
-// keep normalizeId, readCart, writeCart, addToCart, dedupeCart as you have them
 
-// decrease qty by N (or remove if hits 0)
 export function removeFromCart(id, qty = 1) {
   const cart = readCart();
   const idx = cart.findIndex(p => String(p.Id ?? p.id) === String(id));
@@ -76,7 +73,6 @@ export function removeFromCart(id, qty = 1) {
   return cart;
 }
 
-// remove item entirely
 export function deleteItem(id) {
   const cart = readCart().filter(p => String(p.Id ?? p.id) !== String(id));
   writeCart(cart);
